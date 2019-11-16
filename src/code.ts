@@ -1,6 +1,58 @@
+import {AsyncSubject} from "rxjs/AsyncSubject";
+
+
+var subject = new AsyncSubject()
+
+subject.subscribe(
+    (data)=> addItem('Observer 1: '+data),
+    ()=> addItem('observer 1 completed')
+)
+var i = 1;
+var int = setInterval(()=>subject.next(i++),100);
+
+setTimeout(()=>{
+    var observer2 = subject.subscribe(
+        data=> addItem('Observer 2: '+data)
+    )
+    subject.complete()
+},500)
+ 
+
+
+function addItem(val:any){
+    var node = document.createElement("li")
+    var textNode = document.createTextNode(val);
+    node.appendChild(textNode);
+    document.getElementById("output").appendChild(node);
+}
+
+/*
+//Replay Subject with second argument of window time
 import {ReplaySubject} from "rxjs/ReplaySubject";
 
 
+var subject = new ReplaySubject(30,500)
+
+subject.subscribe(
+    (data)=> addItem('Observer 1 '+data),
+    (err)=> addItem(err),
+    ()=> addItem('observer 1 completed')
+)
+var i = 1;
+var int = setInterval(()=>subject.next(i++),100);
+
+setTimeout(()=>{
+    var observer2 = subject.subscribe(
+        data=> addItem('Observer 2'+data)
+    )
+},500)
+ 
+
+
+*/
+
+/*
+//Replay Subject: returns previous x number of emitted events before subscription
 var subject = new ReplaySubject(2)
 
 subject.subscribe(
@@ -24,14 +76,7 @@ subject.next('The third thing has been sent')
 
 observer2.unsubscribe()
 subject.next('The final thing has been sent')
-
-
-function addItem(val:any){
-    var node = document.createElement("li")
-    var textNode = document.createTextNode(val);
-    node.appendChild(textNode);
-    document.getElementById("output").appendChild(node);
-}
+*/
 
 /*
 Behavious Subject: Emits last emitted value
