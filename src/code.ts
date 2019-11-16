@@ -1,4 +1,21 @@
 import {Observable} from "rxjs/Observable";
+import 'rxjs/add/operator/share'
+import {fromEvent} from 'rxjs/Observable/fromEvent';
+
+
+var observable = fromEvent(document,'mousemove')
+
+setTimeout(()=>{
+    var subscription = observable.subscribe((x:any)=>addItem(x))
+},2000);
+
+function addItem(val:any){
+    var node = document.createElement("li")
+    var textNode = document.createTextNode(val);
+    node.appendChild(textNode);
+    document.getElementById("output").appendChild(node);
+}
+/*
 console.log(Observable)
 var observable = Observable.create((observer:any)=>{
     try{
@@ -11,25 +28,18 @@ var observable = Observable.create((observer:any)=>{
     catch(err){
         observer.error(err);
     }
-});
+}).share();
 var observer = observable.subscribe(
     (x:any)=> addItem(x),
     (error:any)=> addItem(error),
     ()=> addItem('Completed')
 );
 
-var observer2 = observable.subscribe(
-    (x:any)=> addItem(x)
-);
-observer.add(observer2)
+
 
 setTimeout(()=>{
-    observer.unsubscribe();
-}, 9002);
-
-function addItem(val:any){
-    var node = document.createElement("li")
-    var textNode = document.createTextNode(val);
-    node.appendChild(textNode);
-    document.getElementById("output").appendChild(node);
-}
+    var observer2 = observable.subscribe(
+        (x:any)=> addItem('Subsciber 2: '+x)
+    )
+}, 1000);
+*/
