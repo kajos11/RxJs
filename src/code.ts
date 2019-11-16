@@ -1,3 +1,42 @@
+import {ReplaySubject} from "rxjs/ReplaySubject";
+
+
+var subject = new ReplaySubject(2)
+
+subject.subscribe(
+    (data)=> addItem('Observer 1 '+data),
+    (err)=> addItem(err),
+    ()=> addItem('observer 1 completed')
+)
+
+subject.next('the first thing has been sent')
+subject.next('another thing has been sent')
+subject.next('about to subscibe 2nd observer')
+
+var observer2 = subject.subscribe(
+    (data)=> addItem('Observer 2'+data),
+    (err)=> addItem(err),
+    ()=> addItem('observer 1 completed')
+)
+
+subject.next('The second thing has been sent')
+subject.next('The third thing has been sent')
+
+observer2.unsubscribe()
+subject.next('The final thing has been sent')
+
+
+function addItem(val:any){
+    var node = document.createElement("li")
+    var textNode = document.createTextNode(val);
+    node.appendChild(textNode);
+    document.getElementById("output").appendChild(node);
+}
+
+/*
+Behavious Subject: Emits last emitted value
+*/
+/*
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 
@@ -23,18 +62,10 @@ subject.next('The third thing has been sent')
 
 observer2.unsubscribe()
 subject.next('The final thing has been sent')
-
-
-function addItem(val:any){
-    var node = document.createElement("li")
-    var textNode = document.createTextNode(val);
-    node.appendChild(textNode);
-    document.getElementById("output").appendChild(node);
-}
-
+*/
 
 /*
-Subject
+Subject: Emits only after being subscribed
 */
 /*
 import {Subject} from "rxjs/Subject";
