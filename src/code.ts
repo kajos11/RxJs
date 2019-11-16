@@ -1,13 +1,28 @@
-import {Observable} from "rxjs/Observable";
-import 'rxjs/add/operator/share'
-import {fromEvent} from 'rxjs/Observable/fromEvent';
+import {Subject} from "rxjs/Subject";
 
 
-var observable = fromEvent(document,'mousemove')
+var subject = new Subject()
 
-setTimeout(()=>{
-    var subscription = observable.subscribe((x:any)=>addItem(x))
-},2000);
+subject.subscribe(
+    (data)=> addItem(data),
+    (err)=> addItem(err),
+    ()=> addItem('observer 1 completed')
+)
+
+subject.next('the first thing has been sent')
+
+var observer2 = subject.subscribe(
+    (data)=> addItem('Observer 2'+data),
+    (err)=> addItem(err),
+    ()=> addItem('observer 1 completed')
+)
+
+subject.next('The second thing has been sent')
+subject.next('The third thing has been sent')
+
+observer2.unsubscribe()
+subject.next('The final thing has been sent')
+
 
 function addItem(val:any){
     var node = document.createElement("li")
@@ -15,7 +30,16 @@ function addItem(val:any){
     node.appendChild(textNode);
     document.getElementById("output").appendChild(node);
 }
+
+
 /*
+var observable = fromEvent(document,'mousemove')
+
+setTimeout(()=>{
+    var subscription = observable.subscribe((x:any)=>addItem(x))
+},2000);
+
+
 console.log(Observable)
 var observable = Observable.create((observer:any)=>{
     try{
