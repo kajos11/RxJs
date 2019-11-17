@@ -1,3 +1,84 @@
+import {Observable} from "rxjs/Observable";
+import {Subject} from "rxjs/Subject";
+import {interval}  from "rxjs/Observable/interval"
+import  "rxjs/add/operator/skipUntil";
+
+var observable1 = Observable.create((data:any)=>{
+    var i = 1;
+    setInterval(()=>{
+        data.next(i++)
+    },1000)
+})
+
+var subject = new Subject;
+
+setTimeout(()=>{
+    subject.next('hey')
+},5000)
+
+var newObs = observable1.skipUntil(subject)
+
+newObs.subscribe((x:any)=>{
+    addItem(x)
+})
+
+
+
+function addItem(val:any){
+    var node = document.createElement("li")
+    var textNode = document.createTextNode(val);
+    node.appendChild(textNode);
+    document.getElementById("output").appendChild(node);
+}
+
+
+/*
+//from observable
+
+import {from}  from "rxjs/Observable/from"
+import  "rxjs/add/operator/pluck";
+import { fromEventPattern } from "rxjs";
+
+
+from([
+    {first:'kar',last:'jos',age:34},
+    {first:'bab',last:'yaga',age:120},
+    {first:'nit',last:'man',age:25},
+
+])
+.pluck('first')
+.subscribe((d:any)=>addItem(d))
+
+//map operator
+import  "rxjs/add/operator/map";
+
+
+Observable.create((observer:any)=>{
+    observer.next("hey guys")
+})
+.map((val:any)=>[val.toUpperCase()])
+.subscribe((c:any)=>addItem(c));
+
+
+//merge operator
+import 'rxjs/observable/merge';
+import { merge } from "rxjs/observable/merge";
+
+var observable = new Observable((observer:any)=>{
+    observer.next("hey guys!")
+})
+
+var observable2 = new Observable((observer:any)=>{
+    observer.next("HOw is it going?")
+})
+
+var newObs = merge(observable,observable2)
+newObs.subscribe((x:any)=>{
+    addItem(x);
+})
+
+//Async Subject
+
 import {AsyncSubject} from "rxjs/AsyncSubject";
 
 
@@ -16,15 +97,7 @@ setTimeout(()=>{
     )
     subject.complete()
 },500)
- 
-
-
-function addItem(val:any){
-    var node = document.createElement("li")
-    var textNode = document.createTextNode(val);
-    node.appendChild(textNode);
-    document.getElementById("output").appendChild(node);
-}
+*/
 
 /*
 //Replay Subject with second argument of window time
